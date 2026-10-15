@@ -58,9 +58,6 @@ Everything in the hackathon brief's required scope, plus the optional items:
 - **Info pages:** Partners, About, How it works, FAQs, Help, Contact, Terms, Privacy, Community Guidelines.
 - **Reviewer console** (`/admin-ui/`): approve / request changes / reject, advance the lifecycle, issue refunds, resolve change requests, moderate comments, audit log.
 
-## Cost and keys
-
-Free to run. **No API keys and no paid services.** The "AI" drafting is deterministic code on the server (labelled demo mode), payments and ad delivery are simulated, speech recognition runs on the device, and the database is a local SQLite file. The only secret is `JWT_SECRET` (required in production; see `backend/.env.example`).
 
 ## Known limitations
 
