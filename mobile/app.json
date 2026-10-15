@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "Amplify",
+    "slug": "amplify-campaigns",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.amplify.campaigns"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#14213D",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.amplify.campaigns"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-image",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Amplify to access your photos so you can add campaign images."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Amplify uses the microphone so you can describe your campaign aloud.",
+          "speechRecognitionPermission": "Amplify turns your spoken description into text for your campaign draft."
+        }
+      ]
+    ],
+    "scheme": "amplify",
+    "backgroundColor": "#F7F6F2"
+  }
+}

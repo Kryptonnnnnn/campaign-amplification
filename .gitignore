@@ -1,0 +1,26 @@
+# dependencies & build output
+node_modules/
+mobile/android/
+mobile/ios/
+mobile/.expo/
+mobile/dist/
+*.apk
+*.aab
+
+# local data & secrets
+backend/data.db*
+backend/uploads/
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# large demo media is attached to the GitHub release instead
+docs/*.mp4
+.claude/

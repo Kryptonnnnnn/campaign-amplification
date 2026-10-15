@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amplify · Reviewer console</title>
+<style>
+  :root{--ink:#14213D;--primary:#1F6F6B;--bg:#F7F6F2;--border:#E3E0D6;--danger:#B3382C}
+  *{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,sans-serif;background:var(--bg);color:#1D2433}
+  header{background:var(--ink);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+  main{max-width:960px;margin:0 auto;padding:20px}
+  .card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+  button{font:inherit;font-weight:600;border:1.5px solid var(--primary);background:var(--primary);color:#fff;border-radius:999px;padding:8px 16px;cursor:pointer}
+  button.sec{background:#fff;color:var(--primary)}button.bad{background:#fff;color:var(--danger);border-color:var(--danger)}
+  input,textarea{font:inherit;width:100%;padding:10px;border:1.5px solid var(--border);border-radius:10px;margin:4px 0 10px}
+  .tabs button{margin-right:8px}.pill{display:inline-block;padding:2px 10px;border-radius:999px;background:#E3F1EF;color:#164F4C;font-size:12px;font-weight:700}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.muted{color:#5B6676;font-size:13px}.err{color:var(--danger)}
+  img{max-width:160px;border-radius:8px;margin-right:6px}pre{white-space:pre-wrap;font-size:12px}
+</style></head><body>
+<header><b>Amplify · Reviewer console</b><span id="who"></span></header>
+<main id="app"></main>
+<script>
+const api = (p, o = {}) => fetch(p, { ...o, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + (localStorage.t || '') }, body: o.body && JSON.stringify(o.body) }).then(async r => { const d = await r.json(); if (!r.ok) throw Object.assign(new Error(d.error || 'Error'), { data: d }); return d; });
+const $ = (s) => document.querySelector(s), app = $('#app');
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = (c) => '$' + (c / 100).toLocaleString();
+let tab = 'submitted';
+
+function login(msg = '') {
+  app.innerHTML = `<div class="card" style="max-width:380px;margin:40px auto"><h2>Sign in</h2><p class="err">${esc(msg)}</p>
+  <input id="e" placeholder="Email" value="admin@amplify.demo"><input id="p" type="password" placeholder="Password" value="demo1234">
+  <button onclick="doLogin()">Sign in</button></div>`;
+}
+async function doLogin() {
+  try { const r = await api('/auth/login', { method: 'POST', body: { email: $('#e').value, password: $('#p').value } });
+    if (r.user.role !== 'admin') throw new Error('Reviewer access only'); localStorage.t = r.token; $('#who').textContent = r.user.name; list(); } catch (e) { login(e.message); }
+}
+const TABS = [['submitted', 'Review queue'], ['change_requests', 'Change requests'], ['reports', 'Reported comments'], ['refund_pending', 'Refunds'], ['funding', 'Funding'], ['goal_reached', 'Goal reached'], ['funding_ended', 'Funding ended'], ['distribution_prep', 'Distribution prep'], ['promoting', 'Promoting']];
+async function list() {
+  try {
+    if (tab === 'change_requests') return crList();
+    if (tab === 'reports') return reportList();
+    const { items } = await api('/admin/queue?status=' + tab);
+    app.innerHTML = `<div class="tabs card">${TABS.map(([k, l]) => `<button class="${k === tab ? '' : 'sec'}" onclick="tab='${k}';list()">${l}</button>`).join('')}</div>` +
+      (items.length ? items.map(c => `<div class="card"><div class="row"><span class="pill">${esc(c.status)}</span><b>${esc(c.title)}</b></div>
+      <div class="muted">${esc(c.creatorName)} · ${esc(c.category)} · goal ${c.goalCents ? money(c.goalCents) : '—'} · raised ${money(c.raisedCents)}</div>
+      <p><button onclick="open_('${c.id}')">Open</button></p></div>`).join('') : '<div class="card muted">Nothing in this state.</div>');
+  } catch (e) { if (e.message.includes('Sign in') || e.message.includes('Reviewer')) login(); else app.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}
+
+const tabsBar = () => `<div class="tabs card">${TABS.map(([k, l]) => `<button class="${k === tab ? '' : 'sec'}" onclick="tab='${k}';list()">${l}</button>`).join('')}</div>`;
+async function crList() {
+  const { items } = await api('/admin/change-requests');
+  app.innerHTML = tabsBar() + (items.length ? items.map(r => `<div class="card"><b>${esc(r.title)}</b> <span class="pill">${esc(r.campaignStatus)}</span>
+    <p>${esc(r.note)}</p><textarea id="n${r.id}" rows="2" placeholder="Note to the creator (required)"></textarea>
+    <div class="row"><button onclick="resolveCr('${r.id}','accept')">Accept</button><button class="bad" onclick="resolveCr('${r.id}','decline')">Decline</button></div><p id="m${r.id}" class="err"></p></div>`).join('') : '<div class="card muted">No pending change requests.</div>');
+}
+async function resolveCr(id, action) { try { await api(`/admin/change-requests/${id}/resolve`, { method: 'POST', body: { action, note: $('#n' + id).value } }); crList(); } catch (e) { $('#m' + id).textContent = e.message; } }
+async function reportList() {
+  const { items } = await api('/admin/comment-reports');
+  app.innerHTML = tabsBar() + (items.length ? items.map(r => `<div class="card"><div class="muted">${esc(r.title)} · reported as <b>${esc(r.reason)}</b></div>
+    <p><b>${esc(r.author)}:</b> ${esc(r.body)}</p><div class="row"><button class="bad" onclick="modRes('${r.id}','hide')">Hide comment</button><button class="sec" onclick="modRes('${r.id}','dismiss')">Dismiss report</button></div></div>`).join('') : '<div class="card muted">No open reports.</div>');
+}
+async function modRes(id, action) { await api(`/admin/comment-reports/${id}/resolve`, { method: 'POST', body: { action } }); reportList(); }
+async function open_(id) {
+  const d = await api('/admin/campaigns/' + id), c = d.campaign;
+  const sources = c.story.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('');
+  const checks = Object.entries(d.checks).map(([k, v]) => `<span class="pill" style="background:${v ? '#E4F3EA' : '#FBE9E7'}">${v ? '✓' : '✗'} ${k}</span>`).join(' ');
+  const ops = { submitted: '', funding: [['funding_ended', 'Close funding period']], goal_reached: [['distribution_prep', 'Start distribution prep']], funding_ended: [['distribution_prep', 'Proceed to distribution prep'], ['refund_pending', 'Refund backers']], distribution_prep: [['promoting', 'Authorize promotion'], ['refund_pending', 'Refund']], promoting: [['completed', 'Mark completed']], refund_pending: [['refunded', 'Issue refunds to all backers']] }[c.status] || [];
+  app.innerHTML = `<p><button class="sec" onclick="list()">← Back</button></p><div class="card"><h2>${esc(c.title)}</h2>
+  <div class="row"><span class="pill">${esc(c.status)}</span><span class="muted">${esc(d.owner.name)} (${esc(d.owner.email)}) · ${esc(c.creatorType)}</span></div>
+  <p>${esc(c.summary)}</p><p><img src="${esc(c.coverImage)}"> ${c.visuals.adImages.map(i => `<img src="${esc(i)}">`).join('')}</p>
+  <h3>Story</h3><p><b>${esc(c.story.headline)}</b><br>${esc(c.story.intro)}</p>${c.story.sections.map(s => `<p>${esc(s.text)}</p>`).join('')}
+  <h3>Sources</h3><ul>${sources || '<li class="err">None</li>'}</ul>
+  <h3>Ad</h3><p>${esc(c.visuals.headline)} — ${esc(c.visuals.description)} [${esc(c.visuals.cta)}]</p>
+  <h3>Targeting</h3><p>${esc(c.reach.locations.join(', '))} · ${esc(c.reach.interests.join(', '))} · ${esc(c.reach.channels.join(', '))} · ${c.reach.durationDays} days<br><span class="muted">Allocation: ${esc(JSON.stringify(c.reach.allocation))}</span></p>
+  <h3>Budget</h3><p>Goal ${c.goalCents ? money(c.goalCents) : '—'} · raised ${money(c.raisedCents)} · ${c.backersCount} backers</p>
+  <h3>Distribution checks</h3><p>${checks}</p></div>
+  ${c.status === 'submitted' ? `<div class="card"><h3>Decision</h3><textarea id="note" rows="3" placeholder="Note to the creator (required for changes / rejection)"></textarea>
+  <div class="row"><button onclick="decide('${c.id}','approve')">Approve</button><button class="sec" onclick="decide('${c.id}','request_changes')">Request changes</button><button class="bad" onclick="decide('${c.id}','reject')">Reject</button></div><p id="msg" class="err"></p></div>` : ''}
+  ${ops.length ? `<div class="card"><h3>Operations</h3><div class="row">${ops.map(([to, l]) => `<button onclick="advance('${c.id}','${to}')">${l}</button>`).join('')}${c.status === 'promoting' ? `<button class="sec" onclick="api('/admin/campaigns/${c.id}/delivery',{method:'POST'}).then(()=>open_('${c.id}'))">Simulate delivery sync</button>` : ''}</div><p id="msg" class="err"></p></div>` : ''}
+  <div class="card"><h3>Audit history</h3>${d.audit.map(a => `<div class="muted">${new Date(a.created_at).toLocaleString()} · <b>${esc(a.action)}</b> ${esc(a.from_status || '')} → ${esc(a.to_status || '')} ${esc(a.note || '')}</div>`).join('')}</div>`;
+}
+async function decide(id, action) { try { await api(`/admin/campaigns/${id}/decision`, { method: 'POST', body: { action, note: $('#note').value } }); list(); } catch (e) { $('#msg').textContent = e.message; } }
+async function advance(id, to) { try { await api(`/admin/campaigns/${id}/advance`, { method: 'POST', body: { to } }); open_(id); } catch (e) { $('#msg').textContent = e.message + (e.data.missing ? ' (' + e.data.missing.join(', ') + ')' : ''); } }
+localStorage.t ? list() : login();
+</script></body></html>

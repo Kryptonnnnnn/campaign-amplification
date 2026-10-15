@@ -1,0 +1,13 @@
+# One-click backend deploy: Render dashboard -> New -> Blueprint -> pick this repo.
+# Free plan note: disk is ephemeral, so demo data re-seeds on each restart. That's fine for the prototype.
+services:
+  - type: web
+    name: amplify-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
