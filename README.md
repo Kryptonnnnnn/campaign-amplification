@@ -15,7 +15,7 @@ cd backend && npm install && npm start            # http://localhost:4000
 npm run seed                                      # wipe + re-seed anytime
 
 # 2. App
-cd mobile && npm install && npx expo start        # press a / i, or scan the QR in Expo Go
+cd mobile && npm install && npx expo run:android # dev build (needs Android SDK). Expo Go won't work: the app uses a native speech module
 ```
 
 **Live API:** `https://amplify-api-cvuq.onrender.com` (Render free plan: it sleeps after ~15 min idle, so the first request can take 30-60 s, and demo data re-seeds on restart). The release APK is built against it, so it works on any phone with internet. Reviewer console: `https://amplify-api-cvuq.onrender.com/admin-ui/`.
