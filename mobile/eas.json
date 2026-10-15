@@ -1,7 +1,7 @@
 {
   "cli": { "version": ">= 12.0.0" },
   "build": {
-    "preview": { "distribution": "internal", "android": { "buildType": "apk" }, "env": { "EXPO_PUBLIC_API_URL": "https://REPLACE-WITH-DEPLOYED-API" } },
+    "preview": { "distribution": "internal", "android": { "buildType": "apk" }, "env": { "EXPO_PUBLIC_API_URL": "https://amplify-api-cvuq.onrender.com" } },
     "production": { "autoIncrement": true }
   }
 }

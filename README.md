@@ -18,7 +18,9 @@ npm run seed                                      # wipe + re-seed anytime
 cd mobile && npm install && npx expo start        # press a / i, or scan the QR in Expo Go
 ```
 
-**Physical phone / APK:** the phone can't reach `localhost`. Either set `EXPO_PUBLIC_API_URL=http://<your-LAN-IP>:4000`, or change the server in *Profile → Account settings → Connection*. Android emulator uses `10.0.2.2:4000` automatically.
+**Live API:** `https://amplify-api-cvuq.onrender.com` (Render free plan: it sleeps after ~15 min idle, so the first request can take 30-60 s, and demo data re-seeds on restart). The release APK is built against it, so it works on any phone with internet. Reviewer console: `https://amplify-api-cvuq.onrender.com/admin-ui/`.
+
+**Local development:**  the phone can't reach `localhost`. Either set `EXPO_PUBLIC_API_URL=http://<your-LAN-IP>:4000`, or change the server in *Profile → Account settings → Connection*. Android emulator uses `10.0.2.2:4000` automatically.
 
 **Demo accounts** (password `demo1234`): `demo@amplify.demo` (backer history), `creator@amplify.demo` (owns every seeded campaign, drafts, one under review), `admin@amplify.demo` (reviewer).
 
