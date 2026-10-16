@@ -7,6 +7,18 @@ backend/   Node 22 + Express + zod + SQLite (node:sqlite). Lifecycle, fees, reac
 mobile/    React Native + Expo (SDK 57, expo-router, TypeScript)
 ```
 
+## Screenshots
+
+Android build against the live API. [Download the APK](https://github.com/Kryptonnnnnn/campaign-amplification/releases/download/v1.0.0/amplify-prototype.apk) or [watch the 2½-minute walkthrough](https://github.com/Kryptonnnnnn/campaign-amplification/releases/tag/v1.0.0) (both attached to the v1.0.0 release).
+
+<table>
+<tr><td align="center" width="33%"><img src="docs/screenshots/01-home.jpg" width="230" alt="Home: hero, reach per $1 estimate, featured"><br><sub>Home: hero, reach per $1 estimate, featured</sub></td><td align="center" width="33%"><img src="docs/screenshots/02-explore.jpg" width="230" alt="Explore: search, categories, featured"><br><sub>Explore: search, categories, featured</sub></td><td align="center" width="33%"><img src="docs/screenshots/03-campaign.jpg" width="230" alt="Campaign page: funding, reach estimate"><br><sub>Campaign page: funding, reach estimate</sub></td></tr>
+<tr><td align="center" width="33%"><img src="docs/screenshots/04-story-sources.jpg" width="230" alt="Story with visible sources"><br><sub>Story with visible sources</sub></td><td align="center" width="33%"><img src="docs/screenshots/05-back-amount.jpg" width="230" alt="Back: amount + live reach estimate"><br><sub>Back: amount + live reach estimate</sub></td><td align="center" width="33%"><img src="docs/screenshots/06-back-review-fees.jpg" width="230" alt="Back: fee breakdown before paying"><br><sub>Back: fee breakdown before paying</sub></td></tr>
+<tr><td align="center" width="33%"><img src="docs/screenshots/07-receipt.jpg" width="230" alt="Payment confirmed + receipt"><br><sub>Payment confirmed + receipt</sub></td><td align="center" width="33%"><img src="docs/screenshots/08-voice-create.jpg" width="230" alt="Create with your voice"><br><sub>Create with your voice</sub></td><td align="center" width="33%"><img src="docs/screenshots/09-ad-visuals.jpg" width="230" alt="Step 3: ad visuals + placement previews"><br><sub>Step 3: ad visuals + placement previews</sub></td></tr>
+<tr><td align="center" width="33%"><img src="docs/screenshots/10-reach.jpg" width="230" alt="Step 4: reach + audience preview"><br><sub>Step 4: reach + audience preview</sub></td><td align="center" width="33%"><img src="docs/screenshots/11-goal-submit.jpg" width="230" alt="Step 5: creator sets the goal"><br><sub>Step 5: creator sets the goal</sub></td><td align="center" width="33%"><img src="docs/screenshots/12-submitted.jpg" width="230" alt="Submitted: status timeline"><br><sub>Submitted: status timeline</sub></td></tr>
+<tr><td align="center" width="33%"><img src="docs/screenshots/13-activity.jpg" width="230" alt="Activity: notifications"><br><sub>Activity: notifications</sub></td><td align="center" width="33%"><img src="docs/screenshots/14-dashboard.jpg" width="230" alt="Creator dashboard"><br><sub>Creator dashboard</sub></td><td align="center" width="33%"><img src="docs/screenshots/15-profile.jpg" width="230" alt="Profile and secondary pages"><br><sub>Profile and secondary pages</sub></td></tr>
+</table>
+
 ## Run it
 
 ```bash
