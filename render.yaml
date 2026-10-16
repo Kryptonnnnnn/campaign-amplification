@@ -8,6 +8,11 @@ services:
     dockerContext: ./backend
     plan: free
     healthCheckPath: /health
+    # Only redeploy when the backend changes. README / mobile-only commits shouldn't restart the API.
+    buildFilter:
+      paths:
+        - backend/**
+        - render.yaml
     envVars:
       - key: JWT_SECRET
         generateValue: true
