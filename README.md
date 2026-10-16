@@ -26,7 +26,7 @@ cd mobile && npm install && npx expo run:android # dev build (needs Android SDK)
 
 **Reviewer console:** `http://localhost:4000/admin-ui/` (approve / request changes / reject, advance lifecycle, audit log). Not part of the mobile nav, per the brief.
 
-## Demo script (≈4 min)
+## Demo
 
 1. **Home → Explore**: browse as a guest, search "mangrove", filter by category, sort, open filters.
 2. **Campaign detail**: story, visible sources, Use of funds, Audience, Review & trust, feedback.
